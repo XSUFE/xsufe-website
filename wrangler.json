@@ -7,6 +7,12 @@
   "observability": {
     "enabled": true
   },
+  "routes": [
+    {
+      "pattern": "www.xsufe.com",
+      "custom_domain": true
+    }
+  ],
   "r2_buckets": [
     {
       "binding": "WEBSITE_BUCKET",
