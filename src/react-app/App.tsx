@@ -1,66 +1,107 @@
-// src/App.tsx
-
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import cloudflareLogo from "./assets/Cloudflare_Logo.svg";
-import honoLogo from "./assets/hono.svg";
+import { useEffect, useState } from "react";
 import "./App.css";
 
-function App() {
-	const [count, setCount] = useState(0);
-	const [name, setName] = useState("unknown");
+function HomePage() {
+  return (
+    <main className="home">
+      <section className="hero">
+        <p className="hero-eyebrow">Products</p>
+        <h1>XSUFE</h1>
+      </section>
 
-	return (
-		<>
-			<div>
-				<a href="https://vite.dev" target="_blank">
-					<img src={viteLogo} className="logo" alt="Vite logo" />
-				</a>
-				<a href="https://react.dev" target="_blank">
-					<img src={reactLogo} className="logo react" alt="React logo" />
-				</a>
-				<a href="https://hono.dev/" target="_blank">
-					<img src={honoLogo} className="logo cloudflare" alt="Hono logo" />
-				</a>
-				<a href="https://workers.cloudflare.com/" target="_blank">
-					<img
-						src={cloudflareLogo}
-						className="logo cloudflare"
-						alt="Cloudflare logo"
-					/>
-				</a>
-			</div>
-			<h1>Vite + React + Hono + Cloudflare</h1>
-			<div className="card">
-				<button
-					onClick={() => setCount((count) => count + 1)}
-					aria-label="increment"
-				>
-					count is {count}
-				</button>
-				<p>
-					Edit <code>src/App.tsx</code> and save to test HMR
-				</p>
-			</div>
-			<div className="card">
-				<button
-					onClick={() => {
-						fetch("/api/")
-							.then((res) => res.json() as Promise<{ name: string }>)
-							.then((data) => setName(data.name));
-					}}
-					aria-label="get name"
-				>
-					Name from API is: {name}
-				</button>
-				<p>
-					Edit <code>worker/index.ts</code> to change the name
-				</p>
-			</div>
-			<p className="read-the-docs">Click on the logos to learn more</p>
-		</>
-	);
+      <section className="product-grid" aria-label="products">
+        <a
+          className="product-card product-link"
+          href="https://docs.xsufe.com"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <div className="product-tag">文档平台</div>
+          <h2>SUFEDocs</h2>
+          <p>
+            一个资料分享平台，旨在使校内学生更方便地获取与课程有关的学习资源
+          </p>
+          <span className="cta">访问 docs.xsufe.com</span>
+        </a>
+
+        <a className="product-card product-link" href="/coursedeck">
+          <div className="product-tag">Firefox 扩展</div>
+          <h2>Coursedeck</h2>
+          <p>空中课堂点播问答 Agent，支持安装到 Firefox 侧边栏</p>
+          <br />
+          <span className="cta">查看</span>
+        </a>
+      </section>
+    </main>
+  );
+}
+
+function CoursedeckPage({ downloadUrl }: { downloadUrl: string }) {
+  return (
+    <main className="home">
+      <section className="hero">
+        <p className="hero-eyebrow">Products</p>
+        <h1>Coursedeck</h1>
+        <p className="hero-description">空中课堂点播问答 Agent</p>
+      </section>
+
+      <section className="detail-layout" aria-label="coursedeck-detail">
+        <article className="product-card">
+          <div className="product-tag">Firefox 扩展</div>
+          <h2>Coursedeck</h2>
+          <img
+            className="coursedeck-preview"
+            src="/coursedeck.png"
+            alt="Coursedeck 示例界面"
+          />
+          <a
+            className="download-link"
+            href={downloadUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            点击安装到 Firefox 侧边栏
+          </a>
+          <a className="back-link" href="/">
+            返回主页
+          </a>
+        </article>
+      </section>
+    </main>
+  );
+}
+
+function App() {
+  const [path, setPath] = useState(window.location.pathname);
+
+  useEffect(() => {
+    const onPopState = () => setPath(window.location.pathname);
+    const onDocumentClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement | null;
+      const anchor = target?.closest("a");
+      if (!anchor) return;
+      if (anchor.target === "_blank") return;
+      const href = anchor.getAttribute("href");
+      if (!href || !href.startsWith("/")) return;
+      event.preventDefault();
+      window.history.pushState({}, "", href);
+      setPath(href);
+    };
+
+    window.addEventListener("popstate", onPopState);
+    document.addEventListener("click", onDocumentClick);
+
+    return () => {
+      window.removeEventListener("popstate", onPopState);
+      document.removeEventListener("click", onDocumentClick);
+    };
+  }, []);
+
+  if (path === "/coursedeck") {
+    return <CoursedeckPage downloadUrl="/downloads/coursedeck-latest.xpi" />;
+  }
+
+  return <HomePage />;
 }
 
 export default App;
