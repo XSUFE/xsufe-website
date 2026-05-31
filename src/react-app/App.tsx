@@ -1,10 +1,17 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 
+function HeaderLogo() {
+  return (
+    <img className="site-logo" src="/logo.svg" alt="XSUFE" />
+  );
+}
+
 function HomePage() {
   return (
     <main className="home">
       <section className="hero">
+        <HeaderLogo />
         <p className="hero-eyebrow">Products</p>
         <h1>XSUFE</h1>
       </section>
@@ -40,6 +47,7 @@ function CoursedeckPage({ downloadUrl }: { downloadUrl: string }) {
   return (
     <main className="home">
       <section className="hero">
+        <HeaderLogo />
         <p className="hero-eyebrow">Products</p>
         <h1>Coursedeck</h1>
         <p className="hero-description">空中课堂点播问答 Agent</p>
@@ -49,19 +57,19 @@ function CoursedeckPage({ downloadUrl }: { downloadUrl: string }) {
         <article className="product-card">
           <div className="product-tag">Firefox 扩展</div>
           <h2>Coursedeck</h2>
-          <img
-            className="coursedeck-preview"
-            src="/coursedeck.png"
-            alt="Coursedeck 示例界面"
-          />
           <a
             className="download-link"
             href={downloadUrl}
             target="_blank"
             rel="noreferrer"
           >
-            点击安装到 Firefox 侧边栏
+            点此安装到 Firefox 侧边栏
           </a>
+          <img
+            className="coursedeck-preview"
+            src="/coursedeck.png"
+            alt="Coursedeck 示例界面"
+          />
           <a className="back-link" href="/">
             返回主页
           </a>

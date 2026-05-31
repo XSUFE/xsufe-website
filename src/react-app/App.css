@@ -12,6 +12,13 @@
   margin-bottom: 28px;
 }
 
+.site-logo {
+  display: block;
+  height: 42px;
+  width: auto;
+  margin-bottom: 14px;
+}
+
 .hero-eyebrow {
   font-size: 0.84rem;
   font-weight: 700;
@@ -111,7 +118,7 @@
   margin-top: 16px;
   color: #762526;
   font-weight: 700;
-  text-decoration: none;
+  text-decoration: underline;
 }
 
 .download-link:hover {
@@ -121,7 +128,7 @@
 .back-link {
   display: inline-block;
   width: fit-content;
-  margin-top: auto;
+  margin-top: 16px;
   align-self: flex-end;
   padding: 8px 12px;
   border-radius: 8px;
