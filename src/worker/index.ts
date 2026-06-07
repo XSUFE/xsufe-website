@@ -1,16 +1,25 @@
 import { Hono } from "hono";
 
-const app = new Hono<{ Bindings: Env }>();
+type WorkerBindings = Env & {
+	COURSEDECK_VERSION: string;
+};
 
-app.get("/api/", (c) => c.json({ name: "Cloudflare" }));
+const COURSEDECK_DOWNLOAD_NAME = "coursedeck";
 
-app.get("/downloads/coursedeck-latest.xpi", async (c) => {
-  const objectKey = "coursedeck-latest.xpi";
-  const object = await c.env.WEBSITE_BUCKET.get(objectKey);
+function getCoursedeckObjectKey(version: string) {
+	return `${COURSEDECK_DOWNLOAD_NAME}-${version}.xpi`;
+}
 
-  if (!object) {
-    return c.text("coursedeck-latest.xpi not found in bucket", 404);
-  }
+async function downloadCoursedeck(c: {
+	env: WorkerBindings;
+	text: (text: string, status?: number) => Response;
+}) {
+	const objectKey = getCoursedeckObjectKey(c.env.COURSEDECK_VERSION);
+	const object = await c.env.WEBSITE_BUCKET.get(objectKey);
+
+	if (!object) {
+		return c.text(`${objectKey} not found in bucket`, 404);
+	}
 
 	const headers = new Headers();
 	object.writeHttpMetadata(headers);
@@ -18,6 +27,12 @@ app.get("/downloads/coursedeck-latest.xpi", async (c) => {
 	headers.set("content-type", "application/x-xpinstall");
 
 	return new Response(object.body, { headers });
-});
+}
+
+const app = new Hono<{ Bindings: WorkerBindings }>();
+
+app.get("/api/", (c) => c.json({ name: "Cloudflare" }));
+
+app.get("/downloads/coursedeck-latest.xpi", downloadCoursedeck);
 
 export default app;
