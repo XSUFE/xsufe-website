@@ -60,8 +60,6 @@ function CoursedeckPage({ downloadUrl }: { downloadUrl: string }) {
           <a
             className="download-link"
             href={downloadUrl}
-            target="_blank"
-            rel="noreferrer"
           >
             点此安装到 Firefox 侧边栏
           </a>
@@ -106,7 +104,9 @@ function App() {
   }, []);
 
   if (path === "/coursedeck") {
-    return <CoursedeckPage downloadUrl="/downloads/coursedeck-latest.xpi" />;
+    return (
+      <CoursedeckPage downloadUrl="https://www.xsufe.com/downloads/coursedeck-latest.xpi" />
+    );
   }
 
   return <HomePage />;
